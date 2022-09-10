@@ -5,8 +5,9 @@ import {
   Image,
   Linking, 
   TouchableOpacity,
-  // I18nManager
+  I18nManager
 } from "react-native";
+import { Audio } from 'expo-av';
 import {
   Layout,
   Button,
@@ -17,7 +18,7 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 
-import {Heading} from "native-base";
+import {Center, Heading} from "native-base";
 
 import Header from "../components/utils/Header";
 import colors from "../consts/colors";
@@ -33,8 +34,8 @@ export default function ({ route, navigation }) {
   const maxLessons = state.maxLessons;
   const [units, setUnits] = useState(state.lesson.items)
 
-  // I18nManager.forceRTL(true);
-  // I18nManager.allowRTL(true);
+  I18nManager.forceRTL(false);
+  I18nManager.allowRTL(true);
 
 
   const unitItem = ({ item, index }) => {
@@ -49,13 +50,13 @@ export default function ({ route, navigation }) {
           display:"flex",
           alignItems:'center',
           borderRadius:15,
-          backgroundColor:'white',
+          backgroundColor: 'black',
           shadowRadius:10,
-          paddingVertical:6
+          paddingVertical:4
           
 
       }}> 
-        <Text style={{margin:10, color:colors.secondary, fontSize:48, fontWeight:'bold'}}>{item.value}</Text>
+        <Text style={{margin:10, color:'white', fontSize:52, fontWeight:'bold'}}>{item.value}</Text>
     </TouchableOpacity> ;
   };
 
@@ -81,13 +82,39 @@ export default function ({ route, navigation }) {
           marginHorizontal: 20,
         }}
       >
-          <FlatList
-          // legacyImplementation
+          <Center style={{marginBottom:'10%'}}>
+            <Image style={{width:230, height:230, resizeMode:'contain', borderRadius:20,borderColor:colors.secondary, borderWidth:4}} source={require("../../assets/iqra-sounds/course1/images/x-pronounciation.png")} />
+          </Center>
+          {/* <FlatList
+            style={{direction:"rtl"}}
             data={units}
             numColumns={3}
             renderItem={unitItem}
             keyExtractor={(item) => item.id}
-          />
+          /> */}
+
+          <View style={{display:'flex', flexDirection:'row-reverse' ,flexWrap: 'wrap', justifyContent: 'space-around'}}>
+            {units.map((item, index) => {
+              return (
+                <TouchableOpacity key={index} style={{
+                  elevation:3,
+                  width:'30%', 
+                  // marginLeft: p,
+                  // marginHorizontal:'1.8%', 
+                  marginBottom:15,
+                  display:"flex",
+                  alignItems:'center',
+                  borderRadius:15,
+                  backgroundColor: 'black',
+                  shadowRadius:10,
+                  paddingVertical:4
+            
+                  }}> 
+                    <Text style={{margin:10, color:'white', fontSize:52, fontWeight:'bold'}}>{item.value}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
           
         {/* </Section> */}
       </View>

@@ -8,10 +8,10 @@ import TabBarIcon from "../components/utils/TabBarIcon";
 import TabBarText from "../components/utils/TabBarText";
 
 import Home from "../screens/Home";
-import About from "../screens/About";
 import Profile from "../screens/Profile";
 import LessonsScreen from "../screens/LessonsScreen";
 import LessonDetailsScreen from "../screens/LessonDetailsScreen";
+import Tests from "../screens/Tests";
 
 const MainStack = createNativeStackNavigator();
 const Main = () => {
@@ -60,8 +60,8 @@ const MainTabs = () => {
         }}
       />
       <Tabs.Screen
-        name="About"
-        component={About}
+        name="Tests"
+        component={Tests}
         options={{
           tabBarLabel: ({ focused }) => (
             <TabBarText focused={focused} title="Tests" />

@@ -10,7 +10,7 @@ export default (props) => {
     <TopNav backgroundColor={colors.bg}
     borderColor={"transparent"}
 
-        leftContent={props.canGoBack ? <Ionicons name="chevron-back" size={20} color={themeColor.black} onPress={()=>props.navigation.goBack()} />:  <Ionicons name="menu-outline" size={35} color={themeColor.black} /> }
+        leftContent={props.canGoBack ? <Ionicons name="chevron-back" size={30} color={themeColor.black} onPress={()=>props.navigation.goBack()} />:  <Ionicons name="menu-outline" size={35} color={themeColor.black} /> }
         
         middleContent={!props.title ? <Image source={require('../../../assets/icon.png')} style={{height:45, width:45}} /> : <Text>{props.title}</Text> }
 

@@ -23,6 +23,7 @@ import {Center, Heading} from "native-base";
 import Header from "../components/utils/Header";
 import colors from "../consts/colors";
 import lettersLessons from "../services/mocks/letters.lessons";
+// import Sound from 'react-native-sound';
 
  
 
@@ -33,6 +34,7 @@ export default function ({ route, navigation }) {
   const lessonIndex = state.lesson.id;
   const maxLessons = state.maxLessons;
   const [units, setUnits] = useState(state.lesson.items)
+  const [sound, setSound] = useState();
 
   I18nManager.forceRTL(false);
   I18nManager.allowRTL(true);
@@ -60,13 +62,23 @@ export default function ({ route, navigation }) {
     </TouchableOpacity> ;
   };
 
+  function handlePress(){
+    
+   }
 
   useEffect(()=>{
-
-    
+ 
 
   }, [])
-  
+
+  // playSound = async(_path)=> {
+  //   // console.log('Loading Sound');
+  //     const { sound } = await Audio.Sound.createAsync(
+  //       require(_path)
+  //     );
+  //   };
+
+
   const title = "Leçon "+ lessonIndex + "/" + maxLessons;
 
   return (
@@ -96,21 +108,25 @@ export default function ({ route, navigation }) {
           <View style={{display:'flex', flexDirection:'row-reverse' ,flexWrap: 'wrap', justifyContent: 'space-around'}}>
             {units.map((item, index) => {
               return (
-                <TouchableOpacity key={index} style={{
-                  elevation:3,
-                  width:'30%', 
-                  // marginLeft: p,
-                  // marginHorizontal:'1.8%', 
-                  marginBottom:15,
-                  display:"flex",
-                  alignItems:'center',
-                  borderRadius:15,
-                  backgroundColor: 'black',
-                  shadowRadius:10,
-                  paddingVertical:4
+                <TouchableOpacity key={index} 
+
+                  onPress={()=>handlePress()}
+                  
+                  style={{
+                    elevation:3,
+                    width:'30%', 
+                    // marginLeft: p,
+                    // marginHorizontal:'1.8%', 
+                    marginBottom:15,
+                    display:"flex",
+                    alignItems:'center',
+                    borderRadius:15,
+                    backgroundColor: 'black',
+                    shadowRadius:10,
+                    paddingVertical:4
             
                   }}> 
-                    <Text style={{margin:10, color:'white', fontSize:52, fontWeight:'bold'}}>{item.value}</Text>
+                    <Text style={{margin:10, color:'white', fontFamily:'Manrope-Regular' , fontSize:52, fontWeight:'bold'}}>{item.value}</Text>
                 </TouchableOpacity>
               );
             })}

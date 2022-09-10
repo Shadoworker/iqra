@@ -8,23 +8,28 @@ import TabBarIcon from "../components/utils/TabBarIcon";
 import TabBarText from "../components/utils/TabBarText";
 
 import Home from "../screens/Home";
-import SecondScreen from "../screens/SecondScreen";
 import About from "../screens/About";
 import Profile from "../screens/Profile";
+import LessonsScreen from "../screens/LessonsScreen";
+import LessonDetailsScreen from "../screens/LessonDetailsScreen";
 
 const MainStack = createNativeStackNavigator();
 const Main = () => {
   return (
-    <MainStack.Navigator
+    <MainStack.Navigator 
       screenOptions={{
         headerShown: false,
+        contentStyle:{backgroundColor:'#FFF6EA'},
       }}
     >
       <MainStack.Screen name="MainTabs" component={MainTabs} />
-      <MainStack.Screen name="SecondScreen" component={SecondScreen} />
+      <MainStack.Screen name="LessonsScreen" component={LessonsScreen} />
+      <MainStack.Screen name="LessonDetailsScreen" component={LessonDetailsScreen} />
     </MainStack.Navigator>
   );
 };
+
+
 
 const Tabs = createBottomTabNavigator();
 const MainTabs = () => {
@@ -37,18 +42,32 @@ const MainTabs = () => {
           borderTopColor: isDarkmode ? themeColor.dark100 : "#c0c0c0",
           backgroundColor: isDarkmode ? themeColor.dark200 : "#ffffff",
         },
+        
       }}
     >
       {/* these icons using Ionicons */}
       <Tabs.Screen
         name="Home"
+        
         component={Home}
         options={{
           tabBarLabel: ({ focused }) => (
-            <TabBarText focused={focused} title="Home" />
+            <TabBarText focused={focused} title="Cours" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"md-home"} />
+            <TabBarIcon focused={focused} icon={"md-grid"} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="About"
+        component={About}
+        options={{
+          tabBarLabel: ({ focused }) => (
+            <TabBarText focused={focused} title="Tests" />
+          ),
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon={"md-flask"} />
           ),
         }}
       />
@@ -60,19 +79,7 @@ const MainTabs = () => {
             <TabBarText focused={focused} title="Profile" />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"person"} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="About"
-        component={About}
-        options={{
-          tabBarLabel: ({ focused }) => (
-            <TabBarText focused={focused} title="About" />
-          ),
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} icon={"ios-information-circle"} />
+            <TabBarIcon  focused={focused} icon={"person"} />
           ),
         }}
       />

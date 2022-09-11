@@ -34,10 +34,19 @@ export default function ({ route, navigation }) {
   const lessonIndex = state.lesson.id;
   const maxLessons = state.maxLessons;
   const [units, setUnits] = useState(state.lesson.items)
-  const [sound, setSound] = useState();
+  const [soundFiles, setSoundFiles] = useState([require("../../assets/iqra-sounds/test.mp3"), require("../../assets/iqra-sounds/test.mp3")])
+  
+  // let files = [];
+  // for (let i = 0; i < units.length; i++) {
+  //   const el = units[i];
+  //   files.push(require(el.sound));
+  // }
 
-  I18nManager.forceRTL(false);
-  I18nManager.allowRTL(true);
+  const [currentUnitIndex, setCurrentUnitIndex] = useState(0)
+  const [sound, setSound] = useState(new Audio.Sound());
+
+  // I18nManager.forceRTL(false);
+  // I18nManager.allowRTL(true);
 
 
   const unitItem = ({ item, index }) => {
@@ -62,12 +71,20 @@ export default function ({ route, navigation }) {
     </TouchableOpacity> ;
   };
 
-  function handlePress(){
-    
-   }
+  async function playSound(song) {
+    // console.log('Loading Sound');
+
+    const { sound } = await Audio.Sound.createAsync(song);
+    setSound(sound);
+
+    // console.log('Playing Sound');
+    await sound.playAsync(); 
+  }
 
   useEffect(()=>{
- 
+  // require(units[currentUnitIndex].sound)
+  // console.log(units[currentUnitIndex])
+  //  require("../../assets/iqra-sounds/test.mp3")
 
   }, [])
 
@@ -110,8 +127,7 @@ export default function ({ route, navigation }) {
               return (
                 <TouchableOpacity key={index} 
 
-                  onPress={()=>handlePress()}
-                  
+                  onPress={()=>playSound(item.sound)}
                   style={{
                     elevation:3,
                     width:'30%', 

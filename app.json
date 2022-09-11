@@ -22,7 +22,8 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "package": "com.hudaatech.iqra"
+      "package": "com.hudaatech.iqra",
+      "versionCode": 2
     },
     "extra": {
       "eas": {

@@ -34,21 +34,13 @@ export default function ({ route, navigation }) {
   const lessonIndex = state.lesson.id;
   const maxLessons = state.maxLessons;
   const [units, setUnits] = useState(state.lesson.items)
-  const [soundFiles, setSoundFiles] = useState([require("../../assets/iqra-sounds/test.mp3"), require("../../assets/iqra-sounds/test.mp3")])
+  const [clickedIndex, setClickedIndex] = useState(null)
   
-  // let files = [];
-  // for (let i = 0; i < units.length; i++) {
-  //   const el = units[i];
-  //   files.push(require(el.sound));
-  // }
 
   const [currentUnitIndex, setCurrentUnitIndex] = useState(0)
   const [sound, setSound] = useState(new Audio.Sound());
 
-  // I18nManager.forceRTL(false);
-  // I18nManager.allowRTL(true);
-
-
+ 
   const unitItem = ({ item, index }) => {
     let p = index % 2 == 0 ? "0.25%" : "10%";
 
@@ -71,30 +63,21 @@ export default function ({ route, navigation }) {
     </TouchableOpacity> ;
   };
 
-  async function playSound(song) {
-    // console.log('Loading Sound');
+  async function playSound(song, index) {
 
+    setClickedIndex(index);
+    
     const { sound } = await Audio.Sound.createAsync(song);
     setSound(sound);
-
-    // console.log('Playing Sound');
+ 
     await sound.playAsync(); 
   }
 
   useEffect(()=>{
-  // require(units[currentUnitIndex].sound)
-  // console.log(units[currentUnitIndex])
-  //  require("../../assets/iqra-sounds/test.mp3")
+ 
 
   }, [])
-
-  // playSound = async(_path)=> {
-  //   // console.log('Loading Sound');
-  //     const { sound } = await Audio.Sound.createAsync(
-  //       require(_path)
-  //     );
-  //   };
-
+ 
 
   const title = "Leçon "+ lessonIndex + "/" + maxLessons;
 
@@ -127,7 +110,7 @@ export default function ({ route, navigation }) {
               return (
                 <TouchableOpacity key={index} 
 
-                  onPress={()=>playSound(item.sound)}
+                  onPress={()=>playSound(item.sound, index)}
                   style={{
                     elevation:3,
                     width:'30%', 
@@ -137,12 +120,12 @@ export default function ({ route, navigation }) {
                     display:"flex",
                     alignItems:'center',
                     borderRadius:15,
-                    backgroundColor: 'black',
+                    backgroundColor: clickedIndex == index ? colors.primary : 'black',
                     shadowRadius:10,
                     paddingVertical:4
             
                   }}> 
-                    <Text style={{margin:10, color:'white', fontFamily:'Manrope-Regular' , fontSize:52, fontWeight:'bold'}}>{item.value}</Text>
+                    <Text style={{margin:10, color: clickedIndex == index ? 'black' : 'white', fontFamily:'Manrope-Regular' , fontSize:52, fontWeight:'bold'}}>{item.value}</Text>
                 </TouchableOpacity>
               );
             })}

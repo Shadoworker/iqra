@@ -15,11 +15,12 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 
-import {Heading} from "native-base";
+import {Center, Heading} from "native-base";
 
 import Header from "../components/utils/Header";
 import colors from "../consts/colors";
 import lettersLessons from "../services/mocks/letters.lessons";
+import { Ionicons } from "@expo/vector-icons";
 
 
 export default function ({ route, navigation }) {
@@ -80,14 +81,23 @@ export default function ({ route, navigation }) {
       >
        
           <Heading size={"md"} color={colors.secondary} marginTop="2" marginBottom={5}>Leçons</Heading>
-          
+
+          {lessons.length > 0 &&
           <FlatList
             data={lessons}
             numColumns={2}
             renderItem={lessonItem}
             keyExtractor={(item) => item.id}
           />
-          
+          }
+
+          {lessons.length == 0 &&
+            <Center style={{marginTop:'35%'}}>
+              <Ionicons name="warning-outline" size={40} color={"gray"} />
+              <Text style={{color:"gray"}}>Pas encore de leçon pour ce cours.</Text>
+            </Center>
+          }
+
         {/* </Section> */}
       </View>
     </Layout>

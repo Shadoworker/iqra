@@ -44,7 +44,7 @@ const Header = (props) => {
               
             </Menu>
         }
-        rightAction={() => console.log('setting icon pressed')}
+        rightAction={() => {}}
      
     />
   );

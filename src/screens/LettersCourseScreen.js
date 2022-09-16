@@ -75,7 +75,6 @@ const LettersCourseScreen = (props ) => {
 
   useEffect(()=>{
   
-    console.log(props);
 
   }, [])
   

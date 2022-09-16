@@ -4,6 +4,9 @@ import { ThemeProvider } from "react-native-rapi-ui";
 import { extendTheme, NativeBaseProvider } from "native-base";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import store  from "./src/store/store";
+import { Provider , connect} from "react-redux";
+import { PersistGate } from 'redux-persist/integration/react';
 
 const theme = extendTheme({
   colors: {
@@ -20,6 +23,11 @@ const theme = extendTheme({
     initialColorMode: 'dark',
   },
 });
+
+
+const _store = store.configureStore();
+const _persistor = store.persistStore(_store);
+
 
 export default function App() {
 
@@ -42,7 +50,11 @@ export default function App() {
   return (
     <NativeBaseProvider theme={theme}>
       <ThemeProvider>
-        <AppNavigator />
+         <Provider store={_store}> 
+          <PersistGate persistor={_persistor}> 
+            <AppNavigator />
+          </PersistGate>
+        </Provider> 
       </ThemeProvider>
     </NativeBaseProvider>
 

@@ -15,11 +15,13 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 
-import {Heading} from "native-base";
+import {Center, Heading} from "native-base";
 
 import Header from "../components/utils/Header";
 import colors from "../consts/colors";
 import lettersLessons from "../services/mocks/letters.lessons";
+import { useEffect } from "react";
+import storage from "../services/storage";
 
 const coursesData = [
   {id:1, name:"Lettres", icon:require('../../assets/iqra-icons/theme1-icon.png'),
@@ -33,16 +35,25 @@ const coursesData = [
 
 export default function ({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
+  
 
   const courseItem = ({ item, index }) => {
-    let p = index % 2 == 0 ? "0.25%" : "10%";
+    let p = index % 2 == 0 ? "5%" : "10%";
     return <TouchableOpacity  
 
-        onPress={()=>navigation.navigate("LessonsScreen", {state:{lessons : item.lessons}})}
+        onPress={()=>{
+          
+          if(index == 0) // first cours
+            navigation.navigate("LettersCourseScreen", {state:{lesson : item.lessons}})
+          else
+            navigation.navigate("LessonsScreen", {state:{lessons : item.lessons}})
+          
+          }
+        }
 
         style={{
           elevation:3,
-          width:'44%', 
+          width:'40%', 
           marginLeft: p, 
           marginBottom:15,
           display:"flex",
@@ -53,71 +64,50 @@ export default function ({ navigation }) {
           
 
       }}>
-        <Image source={item.icon} style={{width:'70%', marginBottom:-50,  marginTop:-25 ,resizeMode:"center"}} />
+        <Image source={item.icon} style={{width:'70%', marginBottom:-70,  marginTop:-35 ,resizeMode:"center"}} />
         <Text style={{margin:10, color:colors.secondary}}>{item.name}</Text>
     </TouchableOpacity> ;
   };
 
+
+
+  useEffect(()=>{
+
+     storage.getData('test').then(d=>{
+      console.log(d)
+    })
+
+  },[])
+
   return (
     <Layout backgroundColor={colors.bg} >
       <Header navigation={navigation} />
-      <View
-        style={{
-          flex: 1,
-          // alignItems: "center",
-          // justifyContent: "center",
-          // backgroundColor: colors.bg,
-          paddingHorizontal:-5,
-          marginHorizontal: 20,
-        }}
-      >
-        {/* <Section> */}
-          {/* <SectionContent>
-            <Text fontWeight="bold" style={{ textAlign: "center" }}>
-              These UI components provided by Rapi UI
-            </Text>
-            <Button
-              style={{ marginTop: 10 }}
-              text="Rapi UI Documentation"
-              status="info"
-              onPress={() => Linking.openURL("https://rapi-ui.kikiding.space/")}
+     
+      {/* <Center> */}
+        <View
+          style={{
+            flex: 1,
+            // alignItems: "center",
+            // justifyContent: "center",
+            // backgroundColor: colors.bg,
+            paddingHorizontal:-5,
+            marginHorizontal: 20,
+          }}
+        >
+    
+            <Heading size={"md"} color={colors.secondary} marginTop="2" marginLeft={4} marginBottom={3}>Cours</Heading>
+            
+            <FlatList
+              data={coursesData}
+              numColumns={2}
+              renderItem={courseItem}
+              keyExtractor={(item) => item.id}
             />
-            <Button
-              text="Go to second screen"
-              onPress={() => {
-                navigation.navigate("SecondScreen");
-              }}
-              style={{
-                marginTop: 10,
-              }}
-            />
+            
+          {/* </Section> */}
+        </View>
+      {/* </Center> */}
 
-            <Button
-              text={isDarkmode ? "Light Mode" : "Dark Mode"}
-              status={isDarkmode ? "success" : "warning"}
-              onPress={() => {
-                if (isDarkmode) {
-                  setTheme("light");
-                } else {
-                  setTheme("dark");
-                }
-              }}
-              style={{
-                marginTop: 10,
-              }}
-            />
-          </SectionContent> */}
-          <Heading size={"md"} color={colors.secondary} marginTop="2" marginBottom={5}>Cours</Heading>
-          
-          <FlatList
-            data={coursesData}
-            numColumns={2}
-            renderItem={courseItem}
-            keyExtractor={(item) => item.id}
-          />
-          
-        {/* </Section> */}
-      </View>
     </Layout>
   );
 }

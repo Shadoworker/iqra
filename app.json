@@ -16,14 +16,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hudaatech.iqra"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "android": {
       "package": "com.hudaatech.iqra",
-      "versionCode": 2
+      "versionCode": 3
     },
     "extra": {
       "eas": {

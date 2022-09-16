@@ -49,3 +49,5 @@ These are the folders and the functionality
 if you find these useful don't forget to give it a star ⭐ and share it to your friends ❤️
 
 Reach me on [twitter](https://twitter.com/kikiding/)
+// "react": "18.0.0",
+// "react-native": "0.69.5",

@@ -70,6 +70,7 @@ export default function ({ route, navigation }) {
     const { sound } = await Audio.Sound.createAsync(song);
     setSound(sound);
  
+    await sound.setVolumeAsync(1); 
     await sound.playAsync(); 
   }
 

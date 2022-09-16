@@ -9,25 +9,12 @@ import TabBarText from "../components/utils/TabBarText";
 
 import Home from "../screens/Home";
 import Profile from "../screens/Profile";
+import LettersCourseScreen from "../screens/LettersCourseScreen";
 import LessonsScreen from "../screens/LessonsScreen";
 import LessonDetailsScreen from "../screens/LessonDetailsScreen";
 import Tests from "../screens/Tests";
 
-const MainStack = createNativeStackNavigator();
-const Main = () => {
-  return (
-    <MainStack.Navigator 
-      screenOptions={{
-        headerShown: false,
-        contentStyle:{backgroundColor:'#FFF6EA'},
-      }}
-    >
-      <MainStack.Screen name="MainTabs" component={MainTabs} />
-      <MainStack.Screen name="LessonsScreen" component={LessonsScreen} />
-      <MainStack.Screen name="LessonDetailsScreen" component={LessonDetailsScreen} />
-    </MainStack.Navigator>
-  );
-};
+
 
 
 
@@ -86,6 +73,24 @@ const MainTabs = () => {
     </Tabs.Navigator>
   );
 };
+
+const MainStack = createNativeStackNavigator();
+const Main = () => {
+  return (
+    <MainStack.Navigator 
+      screenOptions={{
+        headerShown: false,
+        contentStyle:{backgroundColor:'#FFF6EA'},
+      }}
+    >
+      <MainStack.Screen name="MainTabs" component={MainTabs} />
+      <MainStack.Screen name="LettersCourseScreen" component={LettersCourseScreen} />
+      <MainStack.Screen name="LessonsScreen" component={LessonsScreen} />
+      <MainStack.Screen name="LessonDetailsScreen" component={LessonDetailsScreen} />
+    </MainStack.Navigator>
+  );
+};
+
 
 export default () => {
   return (

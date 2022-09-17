@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.hudaatech.iqra",
-      "versionCode": 3
+      "versionCode": 6
     },
     "extra": {
       "eas": {

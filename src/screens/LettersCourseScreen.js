@@ -63,12 +63,9 @@ const LettersCourseScreen = (props ) => {
   }
 
 
-  const clearTest = () =>{
+  const gotoQuiz = () =>{
 
-    let nextSection = props.mainReduxState.currentLettersSection + 1;
-    if(nextSection > 5) nextSection = 5;
-
-    props.mainReduxActions.update_letters_section(nextSection);
+    props.navigation.navigate("QuizScreen", {state:{quizes : units, section:props.mainReduxState.currentLettersSection}})
 
   }
 
@@ -114,7 +111,7 @@ const LettersCourseScreen = (props ) => {
                   onPress={()=>  item.section <= props.mainReduxState.currentLettersSection ? playSound(item.sound, index) : null}
                   style={{
                     elevation:3,
-                    width:'14%', 
+                    width:'13.5%', 
                     marginBottom:15,
                     display:"flex",
                     alignItems:'center',
@@ -122,7 +119,7 @@ const LettersCourseScreen = (props ) => {
                     backgroundColor:(  clickedIndex == index )? 'black' : groupColors[item.section],
                     opacity:( item.section <= props.mainReduxState.currentLettersSection )? 1 : 0.3,
                     shadowRadius:10,
-                    paddingVertical:4
+                    paddingVertical:0
             
                   }}> 
                     <Text style={{margin:10, transform:[{scale:1.3}] ,color: clickedIndex == index ? 'white' : 'white', fontFamily:'Manrope-Regular' , fontSize:25, fontWeight:'bold'}}>{item.value}</Text>
@@ -132,9 +129,9 @@ const LettersCourseScreen = (props ) => {
           </View>
           
           <Center style={{marginTop:20}}>
-            <TouchableOpacity onPress={clearTest} style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+            <TouchableOpacity onPress={gotoQuiz} style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
               <Image style={{width:80, height:80, resizeMode:'contain'}} source={require("../../assets/iqra-icons/testme_icon.png")} />
-              {/* <Text style={{ fontFamily:'Manrope-Regular' , color:colors.secondary, fontSize:15, fontWeight:'bold'}}>Test</Text> */}
+              <Text style={{ fontFamily:'Manrope-Bold' , color:colors.secondary, fontSize:12, fontWeight:'bold', marginTop:-22, paddingBottom:25}}>QUIZ</Text>
             </TouchableOpacity>
           </Center>
 

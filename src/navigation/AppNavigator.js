@@ -13,6 +13,7 @@ import LettersCourseScreen from "../screens/LettersCourseScreen";
 import LessonsScreen from "../screens/LessonsScreen";
 import LessonDetailsScreen from "../screens/LessonDetailsScreen";
 import Tests from "../screens/Tests";
+import QuizScreen from "../screens/QuizScreen";
 
 
 
@@ -87,6 +88,7 @@ const Main = () => {
       <MainStack.Screen name="LettersCourseScreen" component={LettersCourseScreen} />
       <MainStack.Screen name="LessonsScreen" component={LessonsScreen} />
       <MainStack.Screen name="LessonDetailsScreen" component={LessonDetailsScreen} />
+      <MainStack.Screen name="QuizScreen" component={QuizScreen} />
     </MainStack.Navigator>
   );
 };

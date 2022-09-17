@@ -73,9 +73,7 @@ export default function ({ navigation }) {
 
   useEffect(()=>{
 
-     storage.getData('test').then(d=>{
-      console.log(d)
-    })
+ 
 
   },[])
 

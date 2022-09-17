@@ -4,7 +4,8 @@ import {
   FlatList,
   Image,
   Linking, 
-  TouchableOpacity} from "react-native";
+  TouchableOpacity,
+  LogBox} from "react-native";
 import {
   Layout,
   Button,
@@ -16,7 +17,7 @@ import {
 } from "react-native-rapi-ui";
 import { Audio } from 'expo-av';
 
-import {Center, Heading, ScrollView} from "native-base";
+import {Box, Center, Heading, ScrollView, useToast} from "native-base";
 
 import Header from "../components/utils/Header";
 import colors from "../consts/colors";
@@ -37,19 +38,21 @@ const QuizScreen = (props) => {
   const [clickedIndex, setClickedIndex] = useState(null)
 
   const { state } = props.route.params;
-  const [section, setSection] = useState(state.section)
   const [quizData, setQuizData] = useState(state.quizes)
-  const [sectionQuizes, setSectionQuizes] = useState([])
-  // const [quiz, setQuiz] = useState([])
-  const [quizes, setQuizes] = useState([1,2])
-  const [quizStepper, setQuizStepper] = useState(null)
+  const [quizes, setQuizes] = useState([]) 
+  const [activeStep, setActiveStep] = useState(0) 
+  const [rightAnswer, setRightAnswer] = useState(null) 
+  const [scores, setScores] = useState([0,0,0,0,0]) 
+  const [played, setPlayed] = useState(false)
+
+  const toast = useToast();
 
 
   const quizAnswerItem = ({ item, index }) => {
     let p = index % 2 == 0 ? "5%" : "10%";
     return <TouchableOpacity  
         key={index}
-        onPress={selectAnswer(index)}
+        onPress={()=>selectAnswer(item, index)}
 
         style={{
           elevation:3,
@@ -62,7 +65,7 @@ const QuizScreen = (props) => {
           borderRadius:15,
           borderColor:'gainsboro',
           borderWidth:3,
-          backgroundColor:clickedIndex == index ? colors.primary : 'white',
+          backgroundColor: rightAnswer == item.id ? "#27AE60" : answerStatus(item, index),
           // color:(  clickedIndex == index )? colors.primary : 'white',
 
           shadowRadius:10,
@@ -77,8 +80,15 @@ const QuizScreen = (props) => {
 
     let _initQuizes = quizData.filter(e=>e.section == props.route.params.state.section);
 
-    // console.log(_quizes)
-    // setSectionQuizes(_quizes)
+    // Jumble with some previous (x);
+    let _previousQuizes = [];
+   
+    if(props.route.params.state.section > 0)
+     _previousQuizes = quizData.filter(e=>e.section < props.route.params.state.section);
+
+    // _initQuizes = [..._initQuizes, ..._previousQuizes]
+
+    let _jumbledQuizes = {current : _initQuizes, previous:_previousQuizes}
 
 
     let maxQuizes = 5;
@@ -87,52 +97,84 @@ const QuizScreen = (props) => {
     for (let i = 0; i < maxQuizes; i++) {
       
     
-      let _quizes = [..._initQuizes];
+      let _currentQuizes = [..._jumbledQuizes.current];
+      let _previousQuizes = [..._jumbledQuizes.previous];
+ 
+      // ... 
 
-      // console.log("A_quizes");
-      // console.log(_quizes);
-
-      let max = _quizes.length > 4 ? 4 : _quizes.length;
+      // let max = [..._jumbledQuizes.current, ..._jumbledQuizes.previous].length > 4 ? 4 : _jumbledQuizes.current.length;
 
       let quiz = {items:[], question : null}
 
       // items
-      for (let i = 0; i < max; i++) {
+      let currentMax = Math.floor(Math.random() * 3) + 1;
+      if(_previousQuizes.length == 0) currentMax = 4;
+      let previousMax = 4 - currentMax;
+      for (let i = 0; i < currentMax; i++) {
         
-        let r = Math.floor(Math.random() * _quizes.length);
-
-        const el = _quizes[r];
+        let r = Math.floor(Math.random() * _currentQuizes.length);
+        const el = _currentQuizes[r];
 
         if(quiz.items.indexOf(el) == -1)
         {
           quiz.items.push(el);
-          _quizes.splice(r,1);
+          _currentQuizes.splice(r,1);
         }
       
       }
+
+      for (let i = 0; i < previousMax; i++) {
+        
+        let r = Math.floor(Math.random() * _previousQuizes.length);
+        const el = _previousQuizes[r];
+
+        if(quiz.items.indexOf(el) == -1)
+        {
+          quiz.items.push(el);
+          _previousQuizes.splice(r,1);
+        }
+      
+      }
+
       // Sound
-      var r = Math.floor(Math.random() * quiz.items.length);
-      const soundEl = quiz.items[r];
+      let _quizAmongCurrentSection = quiz.items.filter(e=>e.section == props.route.params.state.section)
+      var r = Math.floor(Math.random() * _quizAmongCurrentSection.length);
+      const soundEl = _quizAmongCurrentSection[r];
       quiz.question = soundEl;
 
       _finalQuizes.push(quiz);
       
     }
  
+    // console.log(_finalQuizes)
     setQuizes(_finalQuizes)
 
+  }
 
-    const stepper = 
-    <ProgressSteps  disabledStepIconColor={"gainsboro"} completedStepIconColor={colors.primary} activeStepIconBorderColor={colors.primary} progressBarColor={colors.primary} completedProgressBarColor={colors.primary} >
+
+  const QuizStepper = (props) => {
+
+    // Auto play first
+    useEffect(()=>{
+      if(!played)
       {
-      _finalQuizes.map((quiz, index)=>
-        <ProgressStep label=""  previousBtnDisabled={true} previousBtnText="" nextBtnText="Suivant" finishBtnText="Terminer" nextBtnTextStyle={{color:colors.secondary}} onSubmit={clearTest}>
+        playSound(props.quizes[0].question.sound)
+        setPlayed(true)
+      }
+    },[])
+
+    return (
+      <ProgressSteps activeStep={activeStep} disabledStepIconColor={"gainsboro"} completedStepIconColor={colors.primary} activeStepIconBorderColor={colors.primary} progressBarColor={colors.primary} completedProgressBarColor={colors.primary} >
+      {
+        props.quizes.map((quiz, index)=>
+        <ProgressStep key={index} label=""  previousBtnDisabled={true} previousBtnText="" nextBtnDisabled={true}  nextBtnText="" finishBtnText="Terminer" nextBtnTextStyle={{color:colors.secondary}} onNext={onNextQuiz} onSubmit={clearTest}>
             <View style={{ alignItems: 'center', flexDirection:'column', justifyContent:'space-around'}} key="0" >
                   <FlatList
                     data={quiz.items}
                     numColumns={2}
                     renderItem={quizAnswerItem}
                     keyExtractor={(item) => item.id}
+                    ListHeaderComponentStyle={{ borderBottomColor: 'transparent', borderBottomWidth: 0 }}
                   />
               
                 <Text style={{marginTop:35}}>Appuyez pour écouter</Text>
@@ -143,30 +185,123 @@ const QuizScreen = (props) => {
             </View>
         </ProgressStep>)
       }
-    </ProgressSteps>;
+    </ProgressSteps>
+    );
+  }
 
-    setQuizStepper(stepper)
+    
+  const answerStatus = (item, index) =>{
+  
+    let _color = "white";
+    if(clickedIndex == index)
+    {
+      _color = colors.primary;
+
+      let currentQuiz = quizes[activeStep];
+      let question = currentQuiz.question;
+
+      if(item.id == question.id)
+      {
+        _color = "#27AE60";
+      }
+      else
+      {
+        _color = "#DF2626";
+      }
+    }
+
+    return _color;
+
+  }
+
+  const selectAnswer = (item, index) =>{
+
+    let currentQuiz = quizes[activeStep];
+
+    let question = currentQuiz.question;
+
+    let _scores = [...scores];
+    let s = 0;
+    if(item.id == question.id)
+    { 
+      s = 1;
+    }
+    else
+    {
+      s = 0;
+      setRightAnswer(question.id)
+    }
+
+    _scores[activeStep] = s;
+    setScores(_scores);
+    
+    setClickedIndex(index);
+
+
+    setTimeout(() => {
+      onNextQuiz();
+    }, 1000);
 
   }
 
   
-  const selectAnswer = (index) =>{
+  const onNextQuiz = () =>{
 
-    setClickedIndex(index);
+    setRightAnswer(null)
+    setClickedIndex(null)
+    let nextStep  = activeStep+1;
+
+    if(nextStep < 5)
+    {
+      setActiveStep(nextStep)
+      
+      let currentQuiz = quizes[nextStep];
+      let question = currentQuiz.question;
+      playSound(question.sound)
+    }
+    else
+    {
+      let sum = scores.reduce((a, b) => a + b, 0)
+      
+      clearTest(sum >= 3);
+
+    }
 
   }
 
-
-  const clearTest = () =>{
+  const clearTest = (cleared = true) =>{
 
     let nextSection = props.mainReduxState.currentLettersSection + 1;
     if(nextSection > 5) nextSection = 5;
 
-    props.mainReduxActions.update_letters_section(nextSection);
+    if(cleared)
+    {
+      toast.show({
+        render: () => {
+          return <Box style={{height:35, display:"flex", alignItems:'center', justifyContent:'center'}} bg="success.500" px="2" py="1" rounded="sm" mb={5}>
+                   <Text> Bravo ! Test réussi.</Text>
+                </Box>;
+        },
+        placement:'top'
+      })
+
+      props.mainReduxActions.update_letters_section(nextSection);
+    }
+    else
+    {
+        toast.show({
+          render: () => {
+            return <Box style={{height:35, display:"flex", alignItems:'center', justifyContent:'center'}} bg="danger.500" px="2" py="1" rounded="sm" mb={5}>
+                    <Text>Veuillez repasser le test.</Text>
+                  </Box>;
+          },
+          placement:'top'
+        })
+    }
 
     setTimeout(() => {
       props.navigation.goBack()
-    }, 50);
+    }, 1200);
   }
 
   
@@ -181,8 +316,10 @@ const QuizScreen = (props) => {
 
 
   useEffect(()=>{
+    
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
 
-    setupSectionQuizes(); 
+    setupSectionQuizes();
 
   }, [])
   
@@ -205,8 +342,11 @@ const QuizScreen = (props) => {
         }}
       >
 
-          {quizStepper}
+          {/* {quizStepper} */}
 
+          {quizes.length > 0 &&
+            <QuizStepper quizes={quizes} />
+          }
          
       </ScrollView>
     </Layout>

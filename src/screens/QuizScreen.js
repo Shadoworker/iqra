@@ -16,6 +16,7 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 import { Audio } from 'expo-av';
+import * as _ from "lodash";
 
 import {Box, Center, Heading, ScrollView, useToast} from "native-base";
 
@@ -78,6 +79,9 @@ const QuizScreen = (props) => {
   
   const setupSectionQuizes = () =>{
 
+
+    let max2AnswersController = [];
+
     let _initQuizes = quizData.filter(e=>e.section == props.route.params.state.section);
 
     // Jumble with some previous (x);
@@ -110,6 +114,7 @@ const QuizScreen = (props) => {
       let currentMax = Math.floor(Math.random() * 3) + 1;
       if(_previousQuizes.length == 0) currentMax = 4;
       let previousMax = 4 - currentMax;
+
       for (let i = 0; i < currentMax; i++) {
         
         let r = Math.floor(Math.random() * _currentQuizes.length);
@@ -136,11 +141,25 @@ const QuizScreen = (props) => {
       
       }
 
-      // Sound
-      let _quizAmongCurrentSection = quiz.items.filter(e=>e.section == props.route.params.state.section)
-      var r = Math.floor(Math.random() * _quizAmongCurrentSection.length);
-      const soundEl = _quizAmongCurrentSection[r];
-      quiz.question = soundEl;
+      
+      // Sound 
+      // NB : Check if a letter is not asked more than twice
+      let _quizAmongCurrentSection = quiz.items.filter(e=>e.section == props.route.params.state.section);
+      let _quizAmongCurrentSectionShuffled = _.shuffle(_quizAmongCurrentSection);
+      
+      for (let i = 0; i < _quizAmongCurrentSectionShuffled.length; i++) 
+      {
+        const soundEl = _quizAmongCurrentSectionShuffled[i];
+        let itemCount = max2AnswersController.filter(e=>e.id == soundEl.id).length;
+        // console.log(itemCount)
+        if(itemCount < 2){
+          quiz.question = soundEl;
+          max2AnswersController.push(soundEl);
+          break;
+        }
+      }
+
+      if(quiz.question == null) quiz.question = _quizAmongCurrentSectionShuffled[0];
 
       _finalQuizes.push(quiz);
       
@@ -167,7 +186,7 @@ const QuizScreen = (props) => {
       <ProgressSteps activeStep={activeStep} disabledStepIconColor={"gainsboro"} completedStepIconColor={colors.primary} activeStepIconBorderColor={colors.primary} progressBarColor={colors.primary} completedProgressBarColor={colors.primary} >
       {
         props.quizes.map((quiz, index)=>
-        <ProgressStep key={index} label=""  previousBtnDisabled={true} previousBtnText="" nextBtnDisabled={true}  nextBtnText="" finishBtnText="Terminer" nextBtnTextStyle={{color:colors.secondary}} onNext={onNextQuiz} onSubmit={clearTest}>
+        <ProgressStep key={index} label=""  previousBtnDisabled={true} previousBtnText="" nextBtnDisabled={true}  nextBtnText="" removeBtnRow={true} finishBtnText="Terminer" nextBtnTextStyle={{color:colors.secondary}} onNext={onNextQuiz} onSubmit={clearTest}>
             <View style={{ alignItems: 'center', flexDirection:'column', justifyContent:'space-around'}} key="0" >
                   <FlatList
                     data={quiz.items}
@@ -177,7 +196,7 @@ const QuizScreen = (props) => {
                     ListHeaderComponentStyle={{ borderBottomColor: 'transparent', borderBottomWidth: 0 }}
                   />
               
-                <Text style={{marginTop:35}}>Appuyez pour écouter</Text>
+                <Text style={{marginTop:35}}>Appuyez pour réécouter</Text>
                 <TouchableOpacity onPress={()=>playSound(quiz.question.sound)} style={{ alignItems: 'center', justifyContent:'space-around', marginTop:10}} key="3">
                   <Image source={require('../../assets/iqra-icons/play_icon.png')} style={{width:65, height:65 ,resizeMode:"center"}} />
                 </TouchableOpacity>
@@ -240,7 +259,7 @@ const QuizScreen = (props) => {
 
     setTimeout(() => {
       onNextQuiz();
-    }, 1000);
+    }, 800);
 
   }
 
@@ -301,7 +320,7 @@ const QuizScreen = (props) => {
 
     setTimeout(() => {
       props.navigation.goBack()
-    }, 1200);
+    }, 1000);
   }
 
   
@@ -311,7 +330,8 @@ const QuizScreen = (props) => {
     setSound(sound);
  
     await sound.setVolumeAsync(1); 
-    await sound.playAsync(); 
+    await sound.playAsync().then(d=>{
+    }); 
   }
 
 
@@ -321,12 +341,14 @@ const QuizScreen = (props) => {
 
     setupSectionQuizes();
    
+    // sound ? sound.unloadAsync() : null;
+
     return sound
     ? () => {
         // console.log('Unloading Sound');
         sound.unloadAsync(); }
     : undefined;
-}, [sound]);
+}, [/* sound */]);
   
   
   

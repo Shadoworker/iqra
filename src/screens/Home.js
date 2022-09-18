@@ -30,7 +30,8 @@ const coursesData = [
   {id:2, name:'Sons', icon:require('../../assets/iqra-icons/theme2-icon.png'), lessons:[]},
   {id:3, name:'Doublement', icon:require('../../assets/iqra-icons/theme3-icon.png'), lessons:[]},
   {id:4, name:'Allongement', icon:require('../../assets/iqra-icons/theme4-icon.png'), lessons:[]},
-  {id:5, name:"L'article “AL”", icon:require('../../assets/iqra-icons/theme5-icon.png'), lessons:[]}
+  {id:5, name:"L'article “AL”", icon:require('../../assets/iqra-icons/theme5-icon.png'), lessons:[]},
+  {id:6, name:"Tajwid", icon:require('../../assets/iqra-icons/theme6-icon.png'), lessons:[]}
 ];
 
 export default function ({ navigation }) {
@@ -46,7 +47,8 @@ export default function ({ navigation }) {
           if(index == 0) // first cours
             navigation.navigate("LettersCourseScreen", {state:{lesson : item.lessons}})
           else
-            navigation.navigate("LessonsScreen", {state:{lessons : item.lessons}})
+            navigation.navigate("GroupingScreen", {state:{lessons : item.lessons}})
+            // navigation.navigate("LessonsScreen", {state:{lessons : item.lessons}})
           
           }
         }

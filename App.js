@@ -34,7 +34,7 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     'Manrope-Regular': require('./assets/fonts/Manrope-Regular.ttf'),
     'Manrope-Bold': require('./assets/fonts/Manrope-Bold.ttf'),
-    'Arabic1': require('./assets/fonts/arabic1.otf'),
+    'arabic1': require('./assets/fonts/arabic2.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {

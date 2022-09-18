@@ -71,9 +71,12 @@ const LettersCourseScreen = (props ) => {
 
 
   useEffect(()=>{
-  
-
-  }, [])
+    return sound
+    ? () => {
+        // console.log('Unloading Sound');
+        sound.unloadAsync(); }
+    : undefined;
+}, [sound]);
   
  
 

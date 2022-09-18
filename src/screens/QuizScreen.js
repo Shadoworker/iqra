@@ -320,8 +320,13 @@ const QuizScreen = (props) => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
 
     setupSectionQuizes();
-
-  }, [])
+   
+    return sound
+    ? () => {
+        // console.log('Unloading Sound');
+        sound.unloadAsync(); }
+    : undefined;
+}, [sound]);
   
   
   
